@@ -82,6 +82,7 @@ h1 b { font-weight: 700; color: var(--accent); }
 .body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
 .card h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.15rem; letter-spacing: -.01em; }
 .card p { color: var(--muted); font-size: .93rem; flex: 1; }
+.date { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .tags span { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); padding: 2px 7px; }
 .up { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); opacity: .85; }
@@ -128,6 +129,7 @@ footer a { color: var(--accent); }
 
 <script>
 /* ===== EDIT HERE =====
+   date: optional upload date as "YYYY-MM-DD"; shown on the card when set.
    url:  link to the hosted game (GitHub Pages or repo)
    img:  path to your screenshot, e.g. "screenshots/gunship.jpg" (16:9 works best).
          If the file is missing, a generated placeholder shows instead. */
@@ -136,7 +138,7 @@ const AUTHOR = "Your Name";
 const GAMES = [
   { title: "Asteroids Arcade", tag: "Arcade shooter",    desc: "Placeholder: classic space rock blasting, rebuilt for the browser.",         tags: ["Arcade", "Space"],         url: "https://5panners.github.io/launcher/Asteroids-Arcade.html", img: "screenshots/asteroids-arcade.jpg", up: "2026-11-25T09:53:19Z" },
   { title: "Gunship",          tag: "Arcade helicopter",  desc: "Placeholder: rockets-only gunship defending a carrier over an island chain.", tags: ["Flight", "Arcade"],        url: "https://5panners.github.io/gunship/", img: "screenshots/gunship.jpg", up: "2026-11-25T10:04:32Z" },
-  { title: "FOrest Sniper",    tag: "Stealth shooter",    desc: "Placeholder: low-poly sniper missions deep in a Bavarian forest.",           tags: ["Shooter", "Low-poly"],     url: "https://5panners.github.io/forest-sniper/", img: "screenshots/forest-sniper.jpg" },
+  { title: "FOrest Sniper", date: "2026-11-25",    tag: "Stealth shooter",    desc: "Placeholder: low-poly sniper missions deep in a Bavarian forest.",           tags: ["Shooter", "Low-poly"],     url: "https://5panners.github.io/forest-sniper/", img: "screenshots/forest-sniper.jpg" },
   { title: "Carrier Landing",  tag: "Flight sim",         desc: "Placeholder: catapult launch, arrested recovery and landing grades.",        tags: ["Flight", "Sim"],           url: "#", img: "screenshots/carrier-landing.jpg" },
   { title: "Vehicle Sim",      tag: "Driving physics",    desc: "Placeholder: the handling model behind my racing and driving games.",        tags: ["Racing", "Physics"],       url: "#", img: "screenshots/vehicle-sim.jpg" }
 ];
@@ -172,6 +174,7 @@ function placeholder(i, label) {
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }
 
+const fmtDate = d => new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 document.getElementById("cards").innerHTML = GAMES.map((g, i) => `
   <a class="card" style="--i:${i}" href="${esc(g.url)}" target="_blank" rel="noopener" aria-label="Launch ${esc(g.title)}">
@@ -182,6 +185,7 @@ document.getElementById("cards").innerHTML = GAMES.map((g, i) => `
     <div class="body">
       <h2>${esc(g.title)}</h2>
       <p>${esc(g.desc)}</p>
+      ${g.date ? `<div class="date">Uploaded ${fmtDate(g.date)}</div>` : ""}
       <div class="tags">${g.tags.map(t => `<span>${esc(t)}</span>`).join("")}</div>
       <div class="up">${g.up ? "Uploaded " : ""}<time${g.up ? ` datetime="${esc(g.up)}"` : ""}>${fmtUp(g.up)}</time></div>
       <div class="go"><span>Launch</span><i>&rarr;</i></div>
