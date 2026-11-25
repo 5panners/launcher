@@ -84,6 +84,7 @@ h1 b { font-weight: 700; color: var(--accent); }
 .card p { color: var(--muted); font-size: .93rem; flex: 1; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .tags span { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); padding: 2px 7px; }
+.up { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); opacity: .85; }
 .go { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; padding-top: 12px; border-top: 1px dashed var(--line); font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
 .go i { font-style: normal; transition: transform .25s; }
 .card:hover .go i { transform: translateX(6px); }
@@ -133,13 +134,16 @@ footer a { color: var(--accent); }
 const PROFILE_URL = "#";
 const AUTHOR = "Your Name";
 const GAMES = [
-  { title: "Asteroids Arcade", tag: "Arcade shooter",    desc: "Placeholder: classic space rock blasting, rebuilt for the browser.",         tags: ["Arcade", "Space"],         url: "https://5panners.github.io/launcher/Asteroids-Arcade.html", img: "screenshots/asteroids-arcade.jpg" },
-  { title: "Gunship",          tag: "Arcade helicopter",  desc: "Placeholder: rockets-only gunship defending a carrier over an island chain.", tags: ["Flight", "Arcade"],        url: "https://5panners.github.io/gunship/", img: "screenshots/gunship.jpg" },
+  { title: "Asteroids Arcade", tag: "Arcade shooter",    desc: "Placeholder: classic space rock blasting, rebuilt for the browser.",         tags: ["Arcade", "Space"],         url: "https://5panners.github.io/launcher/Asteroids-Arcade.html", img: "screenshots/asteroids-arcade.jpg", up: "2026-11-25T09:53:19Z" },
+  { title: "Gunship",          tag: "Arcade helicopter",  desc: "Placeholder: rockets-only gunship defending a carrier over an island chain.", tags: ["Flight", "Arcade"],        url: "https://5panners.github.io/gunship/", img: "screenshots/gunship.jpg", up: "2026-11-25T10:04:32Z" },
   { title: "FOrest Sniper",    tag: "Stealth shooter",    desc: "Placeholder: low-poly sniper missions deep in a Bavarian forest.",           tags: ["Shooter", "Low-poly"],     url: "#", img: "screenshots/forest-sniper.jpg" },
   { title: "Carrier Landing",  tag: "Flight sim",         desc: "Placeholder: catapult launch, arrested recovery and landing grades.",        tags: ["Flight", "Sim"],           url: "#", img: "screenshots/carrier-landing.jpg" },
   { title: "Vehicle Sim",      tag: "Driving physics",    desc: "Placeholder: the handling model behind my racing and driving games.",        tags: ["Racing", "Physics"],       url: "#", img: "screenshots/vehicle-sim.jpg" }
 ];
 /* ===================== */
+/* up: ISO upload date/time (UTC). Newest first; games without one (not uploaded yet) go last. */
+GAMES.sort((a, b) => (b.up ? Date.parse(b.up) : -Infinity) - (a.up ? Date.parse(a.up) : -Infinity));
+const fmtUp = u => { if (!u) return "Not uploaded yet"; const d = new Date(u); return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase() + " / " + d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }); };
 
 document.getElementById("gh-link").href = PROFILE_URL;
 document.getElementById("author").href = PROFILE_URL;
@@ -179,6 +183,7 @@ document.getElementById("cards").innerHTML = GAMES.map((g, i) => `
       <h2>${esc(g.title)}</h2>
       <p>${esc(g.desc)}</p>
       <div class="tags">${g.tags.map(t => `<span>${esc(t)}</span>`).join("")}</div>
+      <div class="up">${g.up ? "Uploaded " : ""}<time${g.up ? ` datetime="${esc(g.up)}"` : ""}>${fmtUp(g.up)}</time></div>
       <div class="go"><span>Launch</span><i>&rarr;</i></div>
     </div>
   </a>`).join("");
